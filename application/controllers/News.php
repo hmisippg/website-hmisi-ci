@@ -1,11 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Welcome extends CI_Controller {
+class News extends CI_Controller {
 
 	public function __construct(){
         parent::__construct();
-        $this->load->model('proker_model');
         $this->load->model('news_model');
         $this->load->helper('url_helper');
         
@@ -13,12 +12,12 @@ class Welcome extends CI_Controller {
 
 	public function index()
 	{
-		$data['prokers'] = $this->proker_model->get_Proker();
-		$data['news']    = $this->news_model->get_news();
+		$data['news'] = $this->news_model->get_news();
+		$data['newsAll'] = $this->news_model->all_news();
 		
 		$this->load->helper('url');
 		$this->load->view('templates/header');
-		$this->load->view('index', $data);
+		$this->load->view('news/news', $data);
 		$this->load->view('templates/footer');
 	}
 }
