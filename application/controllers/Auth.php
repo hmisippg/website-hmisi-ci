@@ -39,6 +39,7 @@ class Auth extends CI_Controller
         if ($user) {
             //if active user
             if ($user['is_active'] == 1) {
+
                 // check pass
                 if (password_verify($password, $user['password'])) {
 
@@ -48,7 +49,12 @@ class Auth extends CI_Controller
                     ];
 
                     $this->session->set_userdata($data);
-                    redirect('Welcome');
+
+                    if ($user['role_id'] == 1) {
+                        redirect('dashboard');
+                    } else {
+                        redirect('Welcome');
+                    }
                 } else {
                     $this->session->set_flashdata(
                         'message',
@@ -56,25 +62,16 @@ class Auth extends CI_Controller
                         Wrong Password.
                     </div>'
                     );
-                    redirect('auth');
                 }
             } else {
                 $this->session->set_flashdata(
                     'message',
                     '<div class="alert alert-danger" role="alert">
-                    This Email, has been activated.
-                </div>'
+                        Wrong Password.
+                    </div>'
                 );
                 redirect('auth');
             }
-        } else {
-            $this->session->set_flashdata(
-                'message',
-                '<div class="alert alert-danger" role="alert">
-                Email, is not Register, Please Register Before.
-            </div>'
-            );
-            redirect('auth');
         }
     }
 
