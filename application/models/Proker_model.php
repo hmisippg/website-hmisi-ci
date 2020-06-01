@@ -6,6 +6,15 @@ class Proker_model extends CI_Model
 		$this->load->database();
 	}
 
+	public function all_Proker()
+	{
+		$query = $this->db->get('proker-img', 5);
+		// menggunakan result array karena data > 1
+		return $query->result_array();
+
+		// NOTES : TINGGAL BUAT PAGINATION
+	}
+
 	public function get_Proker($slug = FALSE)
 	{
 
@@ -26,5 +35,46 @@ class Proker_model extends CI_Model
 		$query = $this->db->get_where('proker-img', array('slug' => $slug_proker));
 		// menggunakan row array karena cuma 1 data
 		return $query->result_array();
+	}
+
+	public function countAllProker()
+	{
+		return $this->db->get('proker-img')->num_rows();
+	}
+
+	public function get_page($limit, $start)
+	{
+		$query = $this->db->get('proker-img', $limit, $start);
+		// menggunakan result array karena data > 1
+		return $query->result_array();
+	}
+
+	public function set_proker()
+	{
+		$this->load->helper('url');
+
+		$foto = $_FILES['image'];
+
+		if ($foto = '') {
+		} else {
+			$config['upload_path'] = './assets/img/proker-img';
+			$config['allowed_types'] = 'jpg|png|jpeg|JPG';
+
+			$this->upload->initialize($config);
+			if (!$this->upload->do_upload('img')) {
+				echo "Failed Upload";
+				die;
+			} else {
+				$foto = $this->upload->data('file_name');
+			}
+		}
+
+		$data = array(
+			'slug' => $this->input->post('slug'),
+			'img' => $foto,
+			'text' => $this->input->post('text')
+		);
+
+		return $this->db->insert('proker-img', $data);
 	}
 }
